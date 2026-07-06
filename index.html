@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeBridge AI - Emergency Response & Disaster Assistant</title>
+  <meta name="description" content="SafeBridge AI is an advanced emergency assistance portal offering real-time disaster maps, live warning signals, shelter location, road safety guidance, and medical directory services.">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  
+  <!-- Custom Style System -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Premium Header Nav -->
+  <header class="glass-panel">
+    <div class="brand">
+      <div class="brand-icon-wrapper">
+        <i class="fas fa-shield-halved fa-lg"></i>
+      </div>
+      <div>
+        <h1>SafeBridge AI</h1>
+        <span>Agents for Good Portal</span>
+      </div>
+    </div>
+
+    <!-- Real-time Stats Ticker -->
+    <div class="header-stats">
+      <div class="stat-chip sc-success">
+        <div class="dot"></div>
+        <span id="stat-shelters-count">0 Shelters</span>
+      </div>
+      <div class="stat-chip sc-warning">
+        <div class="dot"></div>
+        <span id="stat-roads-count">0 Blocked Roads</span>
+      </div>
+      <div class="stat-chip sc-danger">
+        <div class="dot"></div>
+        <span id="stat-sos-count">0 Active SOS</span>
+      </div>
+    </div>
+
+    <!-- Mode Selector & Primary Action -->
+    <div class="header-actions">
+      <div class="mode-toggle" id="mode-toggle-container">
+        <div class="mode-slider"></div>
+        <button class="mode-btn active" id="btn-mode-survivor">
+          <i class="fas fa-user-shield"></i> Survivor Mode
+        </button>
+        <button class="mode-btn" id="btn-mode-responder">
+          <i class="fas fa-hand-holding-hand"></i> Responder Mode
+        </button>
+      </div>
+
+      <button class="sos-beacon-btn" id="trigger-sos-btn">
+        <i class="fas fa-circle-exclamation"></i> Trigger SOS
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Grid App Container -->
+  <div class="app-container">
+    
+    <!-- LEFT SIDEBAR: Live Alerts & AI Assistant -->
+    <aside class="sidebar">
+      
+      <!-- Live Alert Feed -->
+      <section class="panel alerts-panel glass-panel">
+        <div class="panel-header">
+          <h2><i class="fas fa-triangle-exclamation" style="color: var(--color-danger)"></i> Live Alert Feed</h2>
+          <span style="font-size: 10px; background: var(--color-danger)20; color: var(--color-danger); padding: 2px 6px; border-radius: 10px; font-weight: 700; text-transform: uppercase;">Realtime</span>
+        </div>
+        <div class="panel-body" id="alert-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- AI Emergency Chatbot -->
+      <section class="panel assistant-panel glass-panel">
+        <div class="panel-header">
+          <h2><i class="fas fa-robot" style="color: var(--color-info)"></i> AI Crisis Assistant</h2>
+        </div>
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages">
+            <!-- Populated by JS -->
+          </div>
+          <div class="chat-suggestions" id="chat-suggestions">
+            <!-- Chips populated by JS -->
+          </div>
+          <div class="chat-input-area">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Ask about cyclone, flood safety...">
+            <button id="chat-send-btn" class="chat-send-btn">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- CENTER AREA: Interactive Leaflet Map -->
+    <main class="panel map-panel glass-panel">
+      <div class="map-status-overlay">
+        <div class="map-status-badge">
+          <div class="gps-pulse-marker" style="width: 8px; height: 8px; border: none; box-shadow: none; display: inline-block; margin-right: 4px;"></div>
+          Live Emergency Grid Map
+        </div>
+      </div>
+
+      <!-- Floating Map Layer Controller -->
+      <div class="map-layers-panel glass-panel">
+        <button class="layers-toggle-btn" id="layers-panel-toggle" title="Toggle Map Layers">
+          <i class="fas fa-layer-group"></i> Map Layers
+        </button>
+        <div class="layers-content" id="layers-panel-content">
+          <h4>Map Layer Options</h4>
+          
+          <div class="layer-section">
+            <span class="layer-section-title">Base Layer</span>
+            <div class="layer-option-group">
+              <label class="layer-radio">
+                <input type="radio" name="base-layer" id="layer-base-dark" value="dark" checked>
+                <span>Dark City</span>
+              </label>
+              <label class="layer-radio">
+                <input type="radio" name="base-layer" id="layer-base-satellite" value="satellite">
+                <span>Satellite View</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="layer-section" style="margin-top: 10px;">
+            <span class="layer-section-title">Overlays</span>
+            <label class="layer-checkbox">
+              <input type="checkbox" id="layer-toggle-weather">
+              <span>🌧️ Weather Radar</span>
+            </label>
+            <label class="layer-checkbox">
+              <input type="checkbox" id="layer-toggle-hotspots">
+              <span>🚨 Danger Zones</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div id="map"></div>
+    </main>
+
+    <!-- RIGHT SIDEBAR: Resources Directory / Volunteer Forms -->
+    <aside class="sidebar">
+      
+      <!-- SURVIVOR VIEW: Resources Directory (default) -->
+      <section class="panel directory-panel glass-panel" id="directory-section">
+        <div class="directory-tabs">
+          <button class="tab-btn active" id="tab-shelters">
+            <i class="fas fa-house-chimney"></i>
+            <span>Shelters</span>
+          </button>
+          <button class="tab-btn" id="tab-roads">
+            <i class="fas fa-road-barrier"></i>
+            <span>Road Safety</span>
+          </button>
+          <button class="tab-btn" id="tab-medical">
+            <i class="fas fa-kit-medical"></i>
+            <span>Medical Help</span>
+          </button>
+        </div>
+
+        <div class="filter-bar">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="dir-search" class="search-input" placeholder="Search shelters, road blocks, specialties...">
+          </div>
+          
+          <!-- Shelter specific status filters -->
+          <div class="filter-pills" id="shelter-status-filters">
+            <div class="filter-pill active" data-filter="all">All Shelters</div>
+            <div class="filter-pill" data-filter="open">Open</div>
+            <div class="filter-pill" data-filter="full">Full</div>
+          </div>
+        </div>
+
+        <div class="panel-body" style="padding: 0;">
+          <div class="directory-list" id="directory-list">
+            <!-- Directory Cards populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- RESPONDER VIEW: Volunteer Registration & Hazard Reporting -->
+      <section class="panel responder-panel glass-panel" id="responder-section" style="display: none;">
+        <div class="responder-tabs">
+          <button class="resp-tab-btn active" id="resp-tab-report">Report Hazard</button>
+          <button class="resp-tab-btn" id="resp-tab-volunteer">Register Aid / Volunteer</button>
+          <button class="resp-tab-btn" id="resp-tab-volunteers">Active Volunteers</button>
+        </div>
+        
+        <div class="panel-body">
+          
+          <!-- Form 1: Report Hazard -->
+          <form id="hazard-report-form">
+            <div style="margin-bottom: 12px; font-size: 12px; color: var(--text-secondary);">
+              <i class="fas fa-info-circle"></i> Input details about blocked roads, flooded pathways, or structural damage to update the map for all users.
+            </div>
+            
+            <div class="form-group">
+              <label for="hazard-type">Hazard Type</label>
+              <select id="hazard-type" class="form-select" required>
+                <option value="flood">Flood / Inundation</option>
+                <option value="cyclone">High Winds / Cyclone Debris</option>
+                <option value="earthquake">Structural Damage / Landslide</option>
+                <option value="accident">Severe Road Accident</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="hazard-title">Location Title / Landmark</label>
+              <input type="text" id="hazard-title" class="form-input" placeholder="e.g. Ring Road Overpass Blockage" required>
+            </div>
+
+            <div class="form-group">
+              <label for="hazard-location">Region / Zone Name</label>
+              <input type="text" id="hazard-location" class="form-input" placeholder="e.g. Outer Sector 4" required>
+            </div>
+
+            <div class="form-group">
+              <label for="hazard-severity">Emergency Severity</label>
+              <select id="hazard-severity" class="form-select">
+                <option value="critical">Critical (Completely Blocked/Danger)</option>
+                <option value="high">High (Severe Delays)</option>
+                <option value="medium">Medium (Proceed with Caution)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="hazard-desc">Details & Reason</label>
+              <textarea id="hazard-desc" class="form-textarea" placeholder="Describe the water depth, debris size, or road closure details..." required></textarea>
+            </div>
+
+            <button type="submit" class="form-submit-btn">Broadcast Hazard Alert</button>
+          </form>
+
+          <!-- Form 2: Volunteer registration -->
+          <form id="volunteer-registration-form" style="display: none;">
+            <div style="margin-bottom: 12px; font-size: 12px; color: var(--text-secondary);">
+              <i class="fas fa-hand-holding-medical"></i> Register your availability or donate essential supplies (food, shelter capacity, transport) to help rescue units coordinates.
+            </div>
+            
+            <div class="form-group">
+              <label for="vol-name">Full Name / Organization</label>
+              <input type="text" id="vol-name" class="form-input" placeholder="Your name or organization" required>
+            </div>
+
+            <div class="form-group">
+              <label for="vol-phone">Emergency Phone Number</label>
+              <input type="tel" id="vol-phone" class="form-input" placeholder="e.g. +1 (555) 123-4567" required>
+            </div>
+
+            <div class="form-group">
+              <label for="vol-resource-type">Resource/Aid Type Offered</label>
+              <select id="vol-resource-type" class="form-select" required>
+                <option value="manpower">Rescue Volunteer / Physical Aid</option>
+                <option value="food">Food Rations & Drinking Water</option>
+                <option value="shelter">Private Lodging / Temporary Room</option>
+                <option value="transport">Boat / Heavy Transport Vehicles</option>
+                <option value="medical">Medical / First Aid Specialist</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="vol-capacity">Description & Capacity</label>
+              <textarea id="vol-capacity" class="form-textarea" placeholder="e.g. 4x4 pickup truck available; or Can supply 50 hot meals daily..." required></textarea>
+            </div>
+
+            <button type="submit" class="form-submit-btn" style="background: linear-gradient(135deg, var(--color-success), #10b981);">Register Volunteer Support</button>
+          </form>
+
+          <!-- List 3: Active Volunteers -->
+          <div id="active-volunteers-list" style="display: none; margin-top: 10px;">
+            <div style="margin-bottom: 12px; font-size: 12px; color: var(--text-secondary);">
+              <i class="fas fa-handshake-angle" style="color: var(--color-success);"></i> Verified local volunteers, responders, and aid organizations. Contact directly for coordination.
+            </div>
+            <div class="directory-list" id="vol-directory-list" style="padding: 0;">
+              <!-- Vol cards populated by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+  </div>
+
+  <!-- SOS MODAL OVERLAY -->
+  <div class="modal-overlay" id="sos-modal">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <h3><i class="fas fa-triangle-exclamation"></i> Emergency SOS Broadcast</h3>
+        <button class="close-modal-btn" id="close-sos-btn">&times;</button>
+      </div>
+      <div class="panel-body">
+        <form id="sos-submit-form">
+          <div style="color: var(--color-danger); font-size: 12px; margin-bottom: 14px; font-weight: 600; line-height: 1.4;">
+            <i class="fas fa-circle-info"></i> Deploying an SOS beacon places a live pulsing alert indicator on the map for active rescue agencies. Only use in real distress.
+          </div>
+
+          <div class="form-group">
+            <label for="sos-name">Contact Person / Name</label>
+            <input type="text" id="sos-name" class="form-input" placeholder="Enter contact name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="sos-phone">Active Call Back Number</label>
+            <input type="tel" id="sos-phone" class="form-input" placeholder="Mobile number to reach you" required>
+          </div>
+
+          <div class="form-group">
+            <label>Immediate Assistance Required</label>
+            <div class="sos-badge-select">
+              <div class="sos-badge-option" data-need="medical">
+                <i class="fas fa-heart-pulse"></i>
+                <span>Medical Help</span>
+              </div>
+              <div class="sos-badge-option" data-need="rescue">
+                <i class="fas fa-truck-pickup"></i>
+                <span>Evacuation</span>
+              </div>
+              <div class="sos-badge-option" data-need="food">
+                <i class="fas fa-bowl-food"></i>
+                <span>Food & Water</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sos-condition">Medical / Injury Condition</label>
+            <select id="sos-condition" class="form-select">
+              <option value="safe">Safe (But trapped/isolated)</option>
+              <option value="injured">Minor Injuries</option>
+              <option value="critical">Critical / Trapped Victims</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Emergency GPS Location</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="sos-location-coords" class="form-input" placeholder="Retrieving coordinates..." readonly required>
+              <button class="card-action-btn" id="sos-select-map-btn" style="min-width: 130px; margin: 0;">
+                <i class="fas fa-map-pin"></i> Pinpoint on Map
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sos-desc">Situation Details / Messages</label>
+            <textarea id="sos-desc" class="form-textarea" placeholder="Include your exact location (e.g. 3rd floor balcony) and numbers of trapped victims..." required></textarea>
+          </div>
+
+          <button type="submit" class="form-submit-btn" style="background: linear-gradient(135deg, var(--color-danger), #ef4444); box-shadow: 0 4px 12px var(--color-danger-glow);">Broadcast SOS Signal</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS Library -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- App JS & Mock Databases -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
