@@ -173,19 +173,6 @@ in your browser.
 
 ---
 
-# 📡 API Endpoints
-
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | / | Home |
-| GET | /alerts | Disaster Alerts |
-| GET | /shelters | Shelter Information |
-| POST | /chat | AI Assistant |
-| POST | /volunteer | Register Volunteer |
-| POST | /sos | Send SOS |
-
----
-
 # 🔒 Security Features
 
 - Input Validation
