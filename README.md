@@ -1,147 +1,273 @@
-<div align="center">
-
 # 🚨 SafeBridge AI
 
-### AI-Powered Emergency Response & Disaster Assistance Platform
+> **An AI-powered Emergency Response & Disaster Assistance Platform**
 
-![HTML](https://img.shields.io/badge/HTML-5-orange?style=for-the-badge&logo=html5)
-![CSS](https://img.shields.io/badge/CSS-3-blue?style=for-the-badge&logo=css3)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow?style=for-the-badge&logo=javascript)
-![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
-![Track](https://img.shields.io/badge/Google%20AI%20Agents%20Challenge-Agents%20for%20Good-blueviolet?style=for-the-badge)
-
-**Connecting People to Safety When Every Second Counts.**
-
-</div>
+SafeBridge AI is a disaster management platform built to help citizens, volunteers, and emergency responders during natural disasters and emergencies. The platform uses a **Multi-Agent AI architecture** where specialized AI agents collaborate to provide real-time assistance.
 
 ---
 
-# 📖 Overview
+## 🌍 Problem Statement
 
-SafeBridge AI is an AI-powered disaster response platform designed to assist people during emergencies such as floods, cyclones, earthquakes, wildfires, and other natural disasters.
+During floods, earthquakes, cyclones, or other emergencies, people often struggle to find:
 
-The platform provides real-time disaster alerts, emergency shelter information, road safety updates, volunteer coordination, and an AI-powered crisis assistant through an intuitive dashboard.
+- Safe shelters
+- Medical assistance
+- Safe travel routes
+- Real-time emergency alerts
+- Volunteer support
 
----
-
-# 🎯 Problem Statement
-
-During disasters, people often struggle to quickly find:
-
-- 🏠 Safe shelters
-- 🚑 Nearby medical assistance
-- 🛣️ Safe evacuation routes
-- 🚧 Blocked roads
-- 🆘 Emergency support
-- 🙋 Volunteer assistance
-
-SafeBridge AI brings all these services together in one easy-to-use platform.
+SafeBridge AI provides these services through intelligent AI agents.
 
 ---
 
-# ✨ Features
+## ✨ Features
 
-✅ Live Emergency Alerts
-
-✅ Interactive Disaster Dashboard
-
-✅ AI Crisis Assistant
-
-✅ Emergency SOS Button
-
-✅ Shelter Locator
-
-✅ Blocked Road Updates
-
-✅ Disaster Map
-
-✅ Volunteer Registration
-
-✅ Hazard Reporting
-
-✅ Emergency Resource Information
-
-✅ Responsive User Interface
+- 🚨 Live Disaster Alerts
+- 🏠 Nearby Shelter Information
+- 🏥 Medical Assistance
+- 🛣 Safe Route Suggestions
+- 🤝 Volunteer Registration
+- 🆘 Emergency SOS Support
+- 💬 AI Crisis Assistant
+- 📍 Interactive Disaster Dashboard
+- 📊 Real-Time Emergency Monitoring
 
 ---
 
-# 🖥️ Dashboard Preview
+# 🤖 AI Agents
 
+SafeBridge AI uses multiple specialized agents.
 
-### Main Dashboard
+### 🚨 Alert Agent
+Provides disaster alerts and warning information.
 
-![Dashboard](screenshots/dashboard.png)
-<img width="1146" height="793" alt="Screenshot 2026-07-06 214341" src="https://github.com/user-attachments/assets/664270f1-d465-46c5-8d04-1895b1b1554e" />
+### 🏠 Shelter Agent
+Finds available emergency shelters.
 
+### 🏥 Medical Agent
+Suggests nearby hospitals and medical facilities.
 
+### 🛣 Route Agent
+Provides safe travel routes by avoiding dangerous areas.
+
+### 🤝 Volunteer Agent
+Registers volunteers and emergency support teams.
+
+### 🎯 Coordinator Agent
+Coordinates all agents and returns the best response.
 
 ---
 
-# 🛠️ Technologies Used
+# 🧠 Multi-Agent Workflow
+
+```
+User Request
+      │
+      ▼
+Coordinator Agent
+      │
+ ┌────┼─────────────┐
+ │    │      │      │
+ ▼    ▼      ▼      ▼
+Alert Shelter Medical Route
+Agent Agent   Agent   Agent
+      │
+      ▼
+Response
+```
+
+---
+
+# 📁 Project Structure
+
+```
+SafeBridge-AI/
+
+│
+├── index.html
+├── style.css
+├── app.js
+├── data.js
+│
+├── backend/
+│   ├── main.py
+│   ├── coordinator.py
+│   │
+│   └── agents/
+│       ├── __init__.py
+│       ├── alert_agent.py
+│       ├── shelter_agent.py
+│       ├── medical_agent.py
+│       ├── route_agent.py
+│       └── volunteer_agent.py
+│
+└── README.md
+```
+
+---
+
+# 💻 Technologies Used
+
+### Frontend
 
 - HTML5
 - CSS3
-- JavaScript (ES6)
-- Leaflet Maps
-- OpenStreetMap
+- JavaScript
+
+### Backend
+
+- Python
+- FastAPI
+- Uvicorn
+
+### AI Architecture
+
+- Multi-Agent Design
+- Coordinator Agent Pattern
+
+---
+
+# 🚀 Installation
+
+## 1. Clone Repository
+
+```bash
+git clone <repository-url>
+cd SafeBridge-AI
+```
+
+---
+
+## 2. Install Python Packages
+
+```bash
+pip install fastapi uvicorn
+```
+
+---
+
+## 3. Start Backend
+
+```bash
+cd backend
+python -m uvicorn main:app --reload
+```
+
+Backend URL
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+## 4. Launch Frontend
+
+Open
+
+```
+index.html
+```
+
+in your browser.
+
+---
+
+# 📡 API Endpoints
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | / | Home |
+| GET | /alerts | Disaster Alerts |
+| GET | /shelters | Shelter Information |
+| POST | /chat | AI Assistant |
+| POST | /volunteer | Register Volunteer |
+| POST | /sos | Send SOS |
+
+---
+
+# 🔒 Security Features
+
+- Input Validation
+- Request Size Validation
+- Modular Backend
+- Agent Isolation
+- Safe API Responses
+
 
 
 ---
 
-# 💡 How It Works
+# 🎯 Project Workflow
 
-1. Users open the SafeBridge AI dashboard.
-2. Live emergency alerts are displayed.
-3. The disaster map shows shelters and affected areas.
-4. Users can report hazards.
-5. Volunteers can register to provide assistance.
-6. The AI Crisis Assistant answers emergency-related questions.
+```
+User
+
+   │
+
+Dashboard
+
+   │
+
+FastAPI Backend
+
+   │
+
+Coordinator Agent
+
+   │
+
+──────────────
+
+Alert Agent
+
+Shelter Agent
+
+Medical Agent
+
+Route Agent
+
+Volunteer Agent
+
+──────────────
+
+   │
+
+Response
+
+   │
+
+Dashboard
+```
 
 ---
 
-# 🌍 Use Cases
+# 📸 Dashboard
+
+SafeBridge AI provides:
+
+- Live Alert Feed
+- AI Crisis Assistant
+- Disaster Map
+- Shelter Tracking
+- Volunteer Registration
+- SOS Button
+- Emergency Statistics
+
+---
+
+# 🎓 Use Cases
 
 - Flood Management
 - Earthquake Response
-- Cyclone Alerts
-- Wildfire Monitoring
-- Emergency Shelter Guidance
-- Volunteer Coordination
+- Cyclone Assistance
+- Emergency Relief
 - Disaster Preparedness
-
----
-
-# 🔮 Future Enhancements
-
-- Google ADK Multi-Agent System
-- MCP Server Integration
-- Real-Time Weather APIs
-- Live GPS Navigation
-- Hospital Locator
-- Voice Assistant
-- Offline Emergency Mode
-- SMS Alerts
-- Push Notifications
-- Multi-language Support
-- User Authentication
-- Mobile Application
-
----
-
-# 📸 Screenshots
+- Community Volunteer Coordination
 
 
 ---
 
-# 🎯 Future AI Agents
+## ⭐ Thank You
 
-- 🚨 Alert Agent
-- 🏠 Shelter Agent
-- 🚑 Medical Agent
-- 🛣️ Route Safety Agent
-- 🙋 Volunteer Agent
-- 🤖 Crisis Assistant Agent
-
-
-
-</div>
+SafeBridge AI aims to improve disaster preparedness and emergency response through intelligent AI agents, helping communities stay informed and safe.
